@@ -1,0 +1,21 @@
+#include "ui/login_component.hpp"
+#include "server_config.hpp"
+
+import nlohmann.json;
+import ftxui;
+
+int main()
+{
+    namespace ui = ftxui;
+
+    server_config config{"default_name", "https://localhost"};
+    auto screen{ui::ScreenInteractive::Fullscreen()};
+
+    login_component login{screen, config};
+    auto renderer = ui::Renderer(login.component(), [&]{
+        return login.render();
+    });
+
+    screen.Loop(renderer);
+    return 0;
+}

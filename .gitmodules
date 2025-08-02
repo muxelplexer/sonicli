@@ -1,0 +1,12 @@
+[submodule "ext/cpp-httplib"]
+	path = ext/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib.git
+[submodule "ext/json"]
+	path = ext/json
+	url = https://github.com/nlohmann/json.git
+[submodule "ext/cpr"]
+	path = ext/cpr
+	url = https://github.com/libcpr/cpr.git
+[submodule "ext/cryptopp-cmake"]
+	path = ext/cryptopp-cmake
+	url = https://github.com/abdes/cryptopp-cmake.git
