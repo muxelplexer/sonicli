@@ -8,7 +8,7 @@
 import ftxui;
 namespace ui = ftxui;
 
-login_component::login_component(ftxui::ScreenInteractive& screen, server_config& config)
+login_component::login_component(ftxui::ScreenInteractive& screen, oss::server_config& config)
     : mScreen(&screen)
     , mConfig{&config}
     , mSubmit{ftxui::Button("Submit", [&]{

@@ -3,13 +3,13 @@
 #include <string>
 #include <vector>
 
-#include "server_config.hpp"
+#include "oss/server_config.hpp"
 import ftxui;
 
 class login_component final
 {
 public:
-    login_component(ftxui::ScreenInteractive& screen, server_config& config);
+    login_component(ftxui::ScreenInteractive& screen, oss::server_config& config);
     ftxui::Element render();
     inline ftxui::Component component()
     {
@@ -19,7 +19,7 @@ private:
     ftxui::ScreenInteractive* mScreen{nullptr};
     std::vector<std::string> entries{"login"};
     int index{0};
-    server_config* mConfig{nullptr};
+    oss::server_config* mConfig{nullptr};
     bool mConnection{false};
     std::string serverText{""};
     std::string mPassword{""};
