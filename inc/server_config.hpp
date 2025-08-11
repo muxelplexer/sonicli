@@ -1,4 +1,5 @@
 #pragma once
+#include "crypto/password.hpp"
 #include <cpr/parameters.h>
 #include <memory>
 #include <optional>
@@ -15,11 +16,10 @@ struct server_config
 {
     server_config(const std::string& user, const std::string& url);
     bool login();
-    std::optional<std::string> ping() const;
 
+    std::unique_ptr<crypto::password> password{nullptr};
+    std::unique_ptr<cpr::Parameters> parameters{std::make_unique<cpr::Parameters>()};
+    std::optional<std::string> ping() const;
     std::string url_string{};
     std::string user{};
-    std::string password{""};
-    std::string salt{"12345"};
-    std::unique_ptr<cpr::Parameters> parameters{std::make_unique<cpr::Parameters>()};
 };

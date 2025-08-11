@@ -1,9 +1,9 @@
 #include "ui/login_component.hpp"
 #include <cassert>
-#include <cstdint>
 #include <ftxui/component/component.hpp>
 #include <ftxui/dom/elements.hpp>
-#include "crypto/md5.hpp"
+#include <memory>
+#include "crypto/password.hpp"
 
 import ftxui;
 namespace ui = ftxui;
@@ -12,17 +12,21 @@ login_component::login_component(ftxui::ScreenInteractive& screen, server_config
     : mScreen(&screen)
     , mConfig{&config}
     , mSubmit{ftxui::Button("Submit", [&]{
-        const std::string pass{mPassword + mConfig->salt};
-        const std::span<const uint8_t> pass_span{reinterpret_cast<const uint8_t*>(pass.data()), pass.size()};
-        if (auto val{crypto::md5_digest(pass_span)})
+        try
         {
-            mConfig->password = val.value();
+            mConfig->password = std::make_unique<crypto::password>(mPassword);
+            mConnection = mConfig->login();
+            if (!mConnection)
+            {
+                serverText = "Connection Failed";
+                mConfig->password.reset();
+            }
+            else
+                serverText = "";
+        } catch (const std::exception&)
+        {
+            serverText = "Connection Failed - could not hash password";
         }
-        mConnection = mConfig->login();
-        if (!mConnection)
-            serverText = "Connection Failed";
-        else
-            serverText = "";
       })}
     , mContainer(ui::Container::Vertical(
         {

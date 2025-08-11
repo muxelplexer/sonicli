@@ -18,8 +18,12 @@ bool server_config::login()
     parameters->Add({"f","json"});
     parameters->Add({"c",std::string(client_id)});
     parameters->Add({"u",user});
-    parameters->Add({"s",salt});
-    parameters->Add({"t",password});
+    if (!this->password)
+    {
+        return false;
+    }
+    parameters->Add({"s",password->salt()});
+    parameters->Add({"t",password->hash()});
 
     if (this->ping().has_value())
     {
