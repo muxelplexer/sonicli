@@ -1,4 +1,5 @@
 #pragma once
+#include "crypto/password.hpp"
 #include <cpr/parameters.h>
 #include <memory>
 #include <string>
@@ -17,8 +18,7 @@ namespace oss
 
         std::string url_string{};
         std::string user{};
-        std::string password{""};
-        std::string salt{"12345"};
+        std::unique_ptr<crypto::password> password{nullptr};
         std::unique_ptr<cpr::Parameters> parameters{std::make_unique<cpr::Parameters>()};
     };
 }

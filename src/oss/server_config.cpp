@@ -20,8 +20,11 @@ namespace oss
         parameters->Add({"f","json"});
         parameters->Add({"c",std::string(client_id)});
         parameters->Add({"u",user});
-        parameters->Add({"s",salt});
-        parameters->Add({"t",password});
+        if (!password)
+            return false;
+
+        parameters->Add({"s",password->salt()});
+        parameters->Add({"t",password->hash()});
 
         if (oss::ping(*this).has_value())
         {
