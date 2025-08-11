@@ -20,6 +20,7 @@ add_subdirectory(ext/cryptopp-cmake)
 add_executable(sonicli
     src/main.cpp
     src/crypto/md5.cpp
+    src/oss/endpoints.cpp
     src/oss/server_config.cpp
     src/ui/login_component.cpp
 )

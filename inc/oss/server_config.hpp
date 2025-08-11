@@ -1,7 +1,6 @@
 #pragma once
 #include <cpr/parameters.h>
 #include <memory>
-#include <optional>
 #include <string>
 #include <string_view>
 
@@ -15,7 +14,6 @@ namespace oss
     {
         server_config(const std::string& user, const std::string& url);
         bool login();
-        std::optional<std::string> ping() const;
 
         std::string url_string{};
         std::string user{};
