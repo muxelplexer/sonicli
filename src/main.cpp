@@ -17,6 +17,9 @@ int main()
 
     screen.Loop(login_renderer);
 
+    if (!config.password)
+        return 1;
+
     ui::debug_view debug{screen, config};
     auto debug_renderer = ftxui::Renderer(debug.component(), [&]{
         return debug.render();

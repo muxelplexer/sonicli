@@ -16,12 +16,15 @@ namespace ui
 
     private:
         void ping();
+        void musicFolders();
+        std::string mDebugText{""};
 
         int mIndex{0};
         oss::server_config* mConfig{nullptr};
         ftxui::ScreenInteractive* mScreen{nullptr};
         ftxui::Component mQuit{ftxui::Button("Quit", [&]{ mScreen->Exit(); })};
-        ftxui::Component mPing{ftxui::Button("Ping!", [&]{ mScreen->Exit(); })};
+        ftxui::Component mPing{ftxui::Button("Ping!", [&]{ this->ping(); })};
+        ftxui::Component mMusicFolders{ftxui::Button("MusicFolders", [&]{ this->musicFolders(); })};
         ftxui::Component mContainer;
     };
 }
