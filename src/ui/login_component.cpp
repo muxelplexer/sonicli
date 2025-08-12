@@ -6,70 +6,77 @@
 #include "crypto/password.hpp"
 
 import ftxui;
-namespace ui = ftxui;
-
-login_component::login_component(ftxui::ScreenInteractive& screen, server_config& config)
-    : mScreen(&screen)
-    , mConfig{&config}
-    , mSubmit{ftxui::Button("Submit", [&]{
-        try
-        {
-            mConfig->password = std::make_unique<crypto::password>(mPassword);
-            mConnection = mConfig->login();
-            if (!mConnection)
+namespace ui
+{
+    login_component::login_component(ftxui::ScreenInteractive& screen, oss::server_config& config)
+        : mScreen(&screen)
+        , mConfig{&config}
+        , mSubmit{ftxui::Button("Submit", [&]{
+            try
             {
-                serverText = "Connection Failed";
-                mConfig->password.reset();
+                mConfig->password = std::make_unique<crypto::password>(mPassword);
+                if (auto err{mConfig->login()})
+                {
+                    mConnection = false;
+                    serverText = std::format("Connection Failed: {}", *err);
+                    mConfig->password.reset();
+                } else {
+                    mConnection = true;
+                    mScreen->Exit();
+                }
+            } catch (const std::exception&)
+            {
+                serverText = "Connection Failed - could not hash password";
             }
-            else
-                serverText = "";
-        } catch (const std::exception&)
-        {
-            serverText = "Connection Failed - could not hash password";
-        }
-      })}
-    , mContainer(ui::Container::Vertical(
-        {
-            mURLInput,
-            mUserNameInput,
-            mPasswordInput,
-            mSubmit,
-            mQuit,
-        },
-        &index
-    ))
-{
-    assert(mUserName != nullptr);
-    assert(mPassword != nullptr);
-    assert(mURL != nullptr);
-}
+        })}
+        , mContainer(ftxui::Container::Vertical(
+            {
+                mURLInput,
+                mUserNameInput,
+                mPasswordInput,
+                ftxui::Container::Horizontal(
+                    {
+                        mSubmit,
+                        mQuit,
+                    }
+                    , &buttonIndex
+                ),
+            },
+            &index
+        ))
+    {
 
-ftxui::Element login_component::render()
-{
-    const auto submit_color{mConnection ?
-        ui::Color::Green :
-        ui::Color::Red
-    };
+    }
 
-    return ui::vbox({
-        ui::text("SubSonic Server Configuration & Login"),
-        ui::separator(),
-        ui::hbox({
-            ui::text("URL:"),
-            mURLInput->Render(),
-        }),
-        ui::hbox({
-            ui::text("Username:"),
-            mUserNameInput->Render(),
-        }),
-        ui::hbox({
-            ui::text("Password:"),
-            mPasswordInput->Render(),
-        }),
-        ui::separator(),
-        ui::text(serverText),
-        mSubmit->Render(),
-        mQuit->Render()
-    }) | ui::borderStyled(submit_color);
+    ftxui::Element login_component::render()
+    {
+        const auto submit_color{mConnection ?
+            ftxui::Color::Green :
+            ftxui::Color::Red
+        };
+
+        return ftxui::vbox({
+            ftxui::text("SubSonic Server Configuration & Login"),
+            ftxui::separator(),
+            ftxui::hbox({
+                ftxui::text("URL:"),
+                mURLInput->Render(),
+            }),
+            ftxui::hbox({
+                ftxui::text("Username:"),
+                mUserNameInput->Render(),
+            }),
+            ftxui::hbox({
+                ftxui::text("Password:"),
+                mPasswordInput->Render(),
+            }),
+            ftxui::separator(),
+            ftxui::text(serverText),
+            ftxui::hbox({
+                mSubmit->Render() | ftxui::flex,
+                mQuit->Render()
+            })
+        }) | ftxui::borderStyled(submit_color);
+    }
 }
 
