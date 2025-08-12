@@ -15,19 +15,20 @@ namespace ui
             try
             {
                 mConfig->password = std::make_unique<crypto::password>(mPassword);
-                mConnection = mConfig->login();
-                if (!mConnection)
+                if (auto err{mConfig->login()})
                 {
-                    serverText = "Connection Failed";
+                    mConnection = false;
+                    serverText = std::format("Connection Failed: {}", *err);
                     mConfig->password.reset();
+                } else {
+                    mConnection = true;
+                    mScreen->Exit();
                 }
-                else
-                    serverText = "";
             } catch (const std::exception&)
             {
                 serverText = "Connection Failed - could not hash password";
             }
-          })}
+        })}
         , mContainer(ftxui::Container::Vertical(
             {
                 mURLInput,

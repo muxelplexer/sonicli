@@ -1,6 +1,7 @@
 #include "oss/server_config.hpp"
 #include "oss/endpoints.hpp"
 #include <memory>
+#include <optional>
 
 import nlohmann.json;
 
@@ -11,7 +12,7 @@ namespace oss
     {
     }
 
-    bool server_config::login()
+    std::optional<std::string> server_config::login()
     {
         if (!parameters)
             parameters = std::make_unique<cpr::Parameters>();
@@ -21,19 +22,24 @@ namespace oss
         parameters->Add({"c",std::string(client_id)});
         parameters->Add({"u",user});
         if (!password)
-            return false;
+            return std::make_optional("No Password!");
 
         parameters->Add({"s",password->salt()});
         parameters->Add({"t",password->hash()});
 
-        if (oss::ping(*this).has_value())
+        const auto response{oss::ping(*this)};
+        if (!response.has_value())
         {
             parameters.reset();
-            return false;
-        } else
-        {
-            return true;
+            return "Could not reach server";
         }
+
+        if (response->error.has_value())
+        {
+            return *response->error->message;
+        }
+
+        return std::nullopt;
     }
 }
 

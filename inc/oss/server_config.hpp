@@ -2,6 +2,7 @@
 #include "crypto/password.hpp"
 #include <cpr/parameters.h>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -14,7 +15,7 @@ namespace oss
     struct server_config
     {
         server_config(const std::string& user, const std::string& url);
-        bool login();
+        std::optional<std::string> login();
 
         std::string url_string{};
         std::string user{};

@@ -39,20 +39,34 @@ namespace ui
 
     void debug_view::ping()
     {
-        if (const auto val{oss::ping(*mConfig)})
+        const auto response{oss::ping(*mConfig)};
+        if (!response.has_value())
         {
-            mDebugText = *val;
-        } else {
-            mDebugText = "Pong!";
+            mDebugText = "Could not reach server";
+            return;
         }
+
+        if (response->error.has_value())
+        {
+            mDebugText = *response->error->message;
+            return;
+        }
+
+        mDebugText = "Pong!";
     }
     void debug_view::musicFolders()
     {
-        if (const auto val{oss::getMusicFolders(*mConfig)})
+        const auto response{oss::getMusicFolders(*mConfig)};
+        if (!response.has_value())
         {
-            mDebugText = *val;
-        } else {
-            mDebugText = "Pong!";
+            mDebugText = "Could not reach server";
+            return;
+        }
+
+        if (response->error.has_value())
+        {
+            mDebugText = *response->error->message;
+            return;
         }
     }
 }
