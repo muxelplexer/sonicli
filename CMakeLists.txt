@@ -21,6 +21,7 @@ add_executable(sonicli
     src/main.cpp
     src/crypto/md5.cpp
     src/crypto/password.cpp
+    src/oss/data/subsonic_response.cpp
     src/oss/endpoints.cpp
     src/oss/server_config.cpp
     src/ui/debug_view.cpp
