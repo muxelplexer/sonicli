@@ -14,6 +14,7 @@ namespace ui
             {
                 mPing,
                 mMusicFolders,
+                mAlbumList,
                 mQuit
             } , &mIndex
         ))
@@ -33,6 +34,7 @@ namespace ui
             ftxui::separator(),
             mPing->Render(),
             mMusicFolders->Render(),
+            mAlbumList->Render(),
             mQuit->Render()
         }) | ftxui::border;
     }
@@ -75,6 +77,33 @@ namespace ui
             {
                 mDebugText += std::format("{} - {}\n", folder.id, folder.name);
             }
+        }
+    }
+
+    void debug_view::albumList()
+    {
+        const auto response{oss::getAlbumList(*mConfig)};
+        if (!response.has_value())
+        {
+            mDebugText = "Could not reach server";
+            return;
+        }
+
+        if (response->error.has_value())
+        {
+            mDebugText = *response->error->message;
+            return;
+        }
+
+        if (response->album_list.has_value())
+        {
+            mDebugText = "";
+            for (const auto& album : response->album_list->album)
+            {
+                mDebugText += std::format("{}\n", album.title);
+            }
+        } else {
+            mDebugText = "Wo album?";
         }
     }
 }

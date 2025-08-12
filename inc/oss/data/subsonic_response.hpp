@@ -51,4 +51,16 @@ namespace oss::data
         friend void from_json(const json& j, music_track& m);
     };
 
+    struct album_list
+    {
+        std::vector<music_track> album;
+        friend void from_json(const json& j, album_list& a);
+    };
+
+    struct album_list_response : public subsonic_response
+    {
+        std::optional<album_list> album_list;
+        friend void from_json(const json& j, album_list_response& a);
+    };
+
 }

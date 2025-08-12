@@ -79,4 +79,16 @@ namespace oss::data
     {
         j.at("title").get_to(m.title);
     }
+
+    void from_json(const json& j, album_list& a)
+    {
+        j.at("album").get_to(a.album);
+    }
+
+    void from_json(const json& j, album_list_response& a)
+    {
+        nlohmann::from_json(j, static_cast<subsonic_response&>(a));
+        if (j.contains("albumList"))
+            j.at("albumList").get_to(a.album_list);
+    }
 }

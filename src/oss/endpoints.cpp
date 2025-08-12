@@ -33,4 +33,23 @@ namespace oss
         const auto body(json::parse(res.text));
         return body.at("subsonic-response").template get<oss::data::music_folder_response>();
     }
+
+    std::optional<data::album_list_response> getAlbumList(const server_config& config)
+    {
+        auto params{*config.parameters};
+        params.Add(
+            {
+                {"type", "newest"},
+                {"size", "25"}
+            }
+        );
+        const auto res{cpr::Get(cpr::Url(config.url_string  + "/rest/getAlbumList.view"), params)};
+        if (res.error)
+        {
+            return std::nullopt;
+        }
+
+        const auto body(json::parse(res.text));
+        return body.at("subsonic-response").template get<oss::data::album_list_response>();
+    }
 }

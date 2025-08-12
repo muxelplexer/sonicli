@@ -17,6 +17,7 @@ namespace ui
     private:
         void ping();
         void musicFolders();
+        void albumList();
         std::string mDebugText{""};
 
         int mIndex{0};
@@ -25,6 +26,7 @@ namespace ui
         ftxui::Component mQuit{ftxui::Button("Quit", [&]{ mScreen->Exit(); })};
         ftxui::Component mPing{ftxui::Button("Ping!", [&]{ this->ping(); })};
         ftxui::Component mMusicFolders{ftxui::Button("MusicFolders", [&]{ this->musicFolders(); })};
+        ftxui::Component mAlbumList{ftxui::Button("AlbumList", [&]{ this->albumList(); })};
         ftxui::Component mContainer;
     };
 }
