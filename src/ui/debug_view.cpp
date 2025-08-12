@@ -69,6 +69,12 @@ namespace ui
             return;
         }
         if (response->music_folders.has_value())
-            mDebugText = "We have folders!";
+        {
+            mDebugText = "";
+            for (const auto& folder : *response->music_folders)
+            {
+                mDebugText += std::format("{} - {}\n", folder.id, folder.name);
+            }
+        }
     }
 }

@@ -44,4 +44,11 @@ namespace oss::data
         std::optional<std::vector<music_folder>> music_folders;
         friend void from_json(const json& j, music_folder_response& m);
     };
+
+    struct music_track
+    {
+        std::string title{};
+        friend void from_json(const json& j, music_track& m);
+    };
+
 }

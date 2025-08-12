@@ -34,7 +34,7 @@ namespace oss
         return body.at("subsonic-response").template get<oss::data::music_folder_response>();
     }
 
-    std::optional<data::subsonic_response> getMusicDirectory(const server_config& config, const std::string& id)
+    std::optional<data::music_directory_response> getMusicDirectory(const server_config& config, const std::string& id)
     {
         auto parameters{*config.parameters};
         parameters.Add({"id", id});
@@ -45,6 +45,6 @@ namespace oss
         }
 
         const auto body(json::parse(res.text));
-        return body.at("subsonic-response").template get<oss::data::subsonic_response>();
+        return body.at("subsonic-response").template get<oss::data::music_directory_response>();
     }
 }

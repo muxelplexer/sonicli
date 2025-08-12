@@ -74,4 +74,23 @@ namespace oss::data
         if (j.contains("musicFolders"))
             j.at("musicFolders").at("musicFolder").get_to(m.music_folders);
     }
+
+    void from_json(const json& j, music_track& m)
+    {
+        j.at("title").get_to(m.title);
+    }
+
+    void from_json(const json& j, music_directory& m)
+    {
+        j.at("id").get_to(m.id);
+        j.at("name").get_to(m.name);
+        j.at("child").get_to(m.children);
+    }
+
+    void from_json(const json& j, music_directory_response& m)
+    {
+        nlohmann::from_json(j, static_cast<subsonic_response&>(m));
+        if (j.contains("directory"))
+            j.at("directory").get_to(m.music_directory);
+    }
 }
