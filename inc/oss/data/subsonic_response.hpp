@@ -58,4 +58,33 @@ namespace oss::data
                 j.at("error").get_to(p.error);
         }
     };
+
+    struct music_folder
+    {
+        int id;
+        std::string name{};
+        inline friend void to_json(json& j, const music_folder& m)
+        {
+            j = json{
+                {"id", m.id},
+                {"name", m.name}
+            };
+        }
+        inline friend void from_json(const json& j, music_folder& m)
+        {
+            j.at("id").get_to(m.id);
+            j.at("name").get_to(m.name);
+        }
+    };
+
+    struct music_folder_response : public subsonic_response
+    {
+        std::optional<std::vector<music_folder>> music_folders;
+        inline friend void from_json(const json& j, music_folder_response& m)
+        {
+            nlohmann::from_json(j, static_cast<subsonic_response&>(m));
+            if (j.contains("musicFolders"))
+                j.at("musicFolders").at("musicFolder").get_to(m.music_folders);
+        }
+    };
 }

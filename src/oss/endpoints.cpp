@@ -22,7 +22,7 @@ namespace oss
         return std::nullopt;
     }
 
-    std::optional<data::subsonic_response> getMusicFolders(const server_config& config)
+    std::optional<data::music_folder_response> getMusicFolders(const server_config& config)
     {
         const auto res{cpr::Get(cpr::Url(config.url_string  + "/rest/getMusicFolders.view"), *config.parameters)};
         if (res.error)
@@ -31,7 +31,7 @@ namespace oss
         }
 
         const auto body(json::parse(res.text));
-        return body.at("subsonic-response").template get<oss::data::subsonic_response>();
+        return body.at("subsonic-response").template get<oss::data::music_folder_response>();
     }
 
     std::optional<data::subsonic_response> getMusicDirectory(const server_config& config, const std::string& id)

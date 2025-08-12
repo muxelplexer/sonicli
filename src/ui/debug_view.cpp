@@ -68,5 +68,7 @@ namespace ui
             mDebugText = *response->error->message;
             return;
         }
+        if (response->music_folders.has_value())
+            mDebugText = "We have folders!";
     }
 }
