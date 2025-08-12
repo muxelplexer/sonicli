@@ -8,7 +8,7 @@ import nlohmann.json;
 namespace oss
 {
     server_config::server_config(const std::string& user, const std::string& url)
-        : user{user},  url_string{url}
+        : url_string{url},  user{user}
     {
     }
 
