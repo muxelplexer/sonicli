@@ -41,3 +41,11 @@ set_target_properties(sonicli
     PROPERTIES
         CXX_STANDARD 20
 )
+target_compile_options(sonicli PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Werror
+    -Weffc++
+    -Wno-missing-designated-field-initializers
+)

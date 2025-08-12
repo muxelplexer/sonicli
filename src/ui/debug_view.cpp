@@ -8,8 +8,8 @@ import ftxui;
 namespace ui
 {
     debug_view::debug_view(ftxui::ScreenInteractive& screen, oss::server_config& config)
-        : mScreen{&screen}
-        , mConfig{&config}
+        : mConfig{&config}
+        , mScreen{&screen}
         , mContainer(ftxui::Container::Vertical(
             {
                 mPing,
