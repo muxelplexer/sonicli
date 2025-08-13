@@ -47,6 +47,7 @@ namespace oss::data
 
     struct music_track
     {
+        std::string id{};
         std::string title{};
         friend void from_json(const json& j, music_track& m);
     };

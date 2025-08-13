@@ -77,6 +77,7 @@ namespace oss::data
 
     void from_json(const json& j, music_track& m)
     {
+        j.at("id").get_to(m.id);
         j.at("title").get_to(m.title);
     }
 

@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 4.0)
 project(sonicli
         VERSION 0.0.1)
 
-set(CXX_STANDARD 23)
-
 set(NLOHMANN_JSON_BUILD_MODULES ON)
 add_subdirectory(ext/json)
 
@@ -24,9 +22,11 @@ add_executable(sonicli
     src/oss/data/subsonic_response.cpp
     src/oss/endpoints.cpp
     src/oss/server_config.cpp
+    src/ui/album_view.cpp
     src/ui/debug_view.cpp
     src/ui/login_component.cpp
 )
+
 target_include_directories(sonicli PRIVATE
     inc/
 )

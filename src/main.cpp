@@ -1,3 +1,4 @@
+#include "ui/album_view.hpp"
 #include "ui/debug_view.hpp"
 #include "ui/login_component.hpp"
 #include "oss/server_config.hpp"
@@ -19,6 +20,12 @@ int main()
 
     if (!config.password)
         return 1;
+
+    ui::album_view album{screen, config};
+    auto album_renderer = ftxui::Renderer(album.component(), [&]{
+        return album.render();
+    });
+    screen.Loop(album_renderer);
 
     ui::debug_view debug{screen, config};
     auto debug_renderer = ftxui::Renderer(debug.component(), [&]{
