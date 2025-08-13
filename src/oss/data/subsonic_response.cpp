@@ -8,9 +8,9 @@ namespace oss::data
 
     void to_json(json& j, const subsonic_error& err)
     {
-        j = json{
-            {"code", err.code},
-            {"message", err.message},
+        j = json {
+            { "code", err.code },
+            { "message", err.message },
         };
     }
 
@@ -27,13 +27,13 @@ namespace oss::data
 
     void to_json(json& j, const subsonic_response& p)
     {
-        j = json{
-            {"status", p.status},
-            {"version", p.version},
-            {"type", p.type},
-            {"serverVersion", p.serverVersion},
-            {"openSubsonic", p.openSubsonic},
-            {"error", p.error}
+        j = json {
+            { "status", p.status },
+            { "version", p.version },
+            { "type", p.type },
+            { "serverVersion", p.serverVersion },
+            { "openSubsonic", p.openSubsonic },
+            { "error", p.error },
         };
     }
     void from_json(const json& j, subsonic_response& p)
@@ -53,9 +53,9 @@ namespace oss::data
 
     void to_json(json& j, const music_folder& m)
     {
-        j = json{
-            {"id", m.id},
-            {"name", m.name}
+        j = json {
+            { "id", m.id },
+            { "name", m.name },
         };
     }
     void from_json(const json& j, music_folder& m)
@@ -92,4 +92,16 @@ namespace oss::data
         if (j.contains("albumList"))
             j.at("albumList").get_to(a.album_list);
     }
-}
+
+    void from_json(const json& j, album_id3& a)
+    {
+        j.at("song").get_to(a.children);
+    }
+
+    void from_json(const json& j, album_response& a)
+    {
+        nlohmann::from_json(j, static_cast<subsonic_response&>(a));
+        if (j.contains("album"))
+            j.at("album").get_to(a.album);
+    }
+} // namespace oss::data
