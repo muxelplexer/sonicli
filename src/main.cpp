@@ -22,10 +22,7 @@ int main()
         return 1;
 
     ui::album_view album{screen, config};
-    auto album_renderer = ftxui::Renderer(album.component(), [&]{
-        return album.render();
-    });
-    screen.Loop(album_renderer);
+    screen.Loop(album.render());
 
     ui::debug_view debug{screen, config};
     auto debug_renderer = ftxui::Renderer(debug.component(), [&]{

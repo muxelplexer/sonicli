@@ -95,7 +95,8 @@ namespace oss::data
 
     void from_json(const json& j, album_id3& a)
     {
-        j.at("song").get_to(a.children);
+        if (j.contains("song"))
+            j.at("song").get_to(a.children);
     }
 
     void from_json(const json& j, album_response& a)

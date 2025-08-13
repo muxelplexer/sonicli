@@ -10,4 +10,5 @@ namespace oss
     std::optional<data::music_folder_response> getMusicFolders(const server_config& config);
     std::optional<data::album_list_response> getAlbumList(const server_config& config);
     std::optional<data::album_response> getAlbum(const server_config& config, const std::string& album_id);
+    std::optional<std::vector<data::album_response>> getAlbum(const server_config& config, const std::vector<data::music_track>& albums_list);
 }

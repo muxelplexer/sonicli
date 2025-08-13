@@ -68,7 +68,7 @@ namespace oss::data
     {
         std::string id {};
         std::string name {};
-        std::vector<music_track> children {};
+        std::optional<std::vector<music_track>> children {};
         friend void from_json(const json& j, album_id3& a);
     };
 
