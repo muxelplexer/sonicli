@@ -1,10 +1,8 @@
 #include "ui/album_view.hpp"
 #include "oss/endpoints.hpp"
 #include <algorithm>
-#include <chrono>
 #include <iostream>
 #include <ranges>
-#include <ratio>
 import ftxui;
 
 namespace ui
@@ -18,7 +16,7 @@ namespace ui
     std::vector<std::string> album_view::get_albums()
     {
         const auto res { oss::getAlbumList(*mConfig) };
-        std::vector<std::string> albums {};
+        mAlbums.clear();
         if (!res.has_value())
         {
             return {};
@@ -31,13 +29,17 @@ namespace ui
 
         if (res->album_list.has_value())
         {
-            albums.reserve(res->album_list->album.size());
             for (const auto& album : res->album_list->album)
             {
-                albums.emplace_back(album.title);
+                mAlbums.emplace_back(album);
             }
         }
-        return albums;
+        std::vector<std::string> album_titles{};
+        album_titles.reserve(mAlbums.size());
+        std::ranges::transform(mAlbums, std::back_inserter(album_titles), [](const auto& album){
+            return album.title;
+        });
+        return album_titles;
     }
 
     std::vector<std::vector<std::string>> album_view::get_albums_tracks()
@@ -102,6 +104,28 @@ namespace ui
         }
 
         return album_tracks;
+    }
+
+    std::vector<std::string> album_view::get_current_albums_tracks()
+    {
+        const auto res { oss::getAlbum(*mConfig, mAlbums[mAlbumSelected].id) };
+        if (!res.has_value())
+        {
+            return {};
+        }
+
+        if (res->error.has_value())
+        {
+            std::cerr << "ERROR: " << *res->error->message << "\n";
+            return {};
+        }
+        std::vector<std::string> tracks {};
+        tracks.reserve(res->album->children->size());
+        for (const auto& track : *res->album->children)
+        {
+            tracks.emplace_back(track.title);
+        }
+        return tracks;
     }
 
     ftxui::Component album_view::render()

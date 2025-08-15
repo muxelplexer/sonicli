@@ -1,4 +1,5 @@
 #pragma once
+#include "oss/data/subsonic_response.hpp"
 #include "oss/server_config.hpp"
 #include <ftxui/component/component_options.hpp>
 import ftxui;
@@ -14,13 +15,15 @@ namespace ui
     private:
         std::vector<std::string> get_albums();
         std::vector<std::vector<std::string>> get_albums_tracks();
+        std::vector<std::string> get_current_albums_tracks();
         [[maybe_unused]] ftxui::ScreenInteractive* mScreen { nullptr };
         oss::server_config* mConfig { nullptr };
 
         int mAlbumSelected { 0 };
         int mTrackSelected { 0 };
+        std::vector<oss::data::music_track> mAlbums{};
         std::vector<std::string> mAlbumTitles { get_albums() };
-        std::vector<std::vector<std::string>> mAlbumTracks { get_albums_tracks() };
+        std::vector<std::vector<std::string>> mAlbumTracks { get_current_albums_tracks() };
         std::vector<std::string> mCurrentAlbumTracks { mAlbumTracks[0] };
 
         ftxui::MenuOption albumOption { .entries   = &mAlbumTitles,
@@ -28,7 +31,7 @@ namespace ui
                                         .on_change = [&]()
                                         {
                                             mTrackSelected      = 0;
-                                            mCurrentAlbumTracks = mAlbumTracks[mAlbumSelected];
+                                            mCurrentAlbumTracks = get_current_albums_tracks();
                                         } };
         ftxui::Component mAlbumMenu { ftxui::Menu(albumOption) };
         ftxui::Component mTrackMenu { ftxui::Menu({ .entries = &mCurrentAlbumTracks, .selected = &mTrackSelected }) };
