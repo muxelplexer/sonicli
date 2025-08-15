@@ -6,103 +6,115 @@ namespace oss::data
     // subsonic_error
     //
 
-    void to_json(json& j, const subsonic_error& err)
+    void to_json(json& obj, const subsonic_error& err)
     {
-        j = json {
+        obj = json {
             { "code", err.code },
             { "message", err.message },
         };
     }
 
-    void from_json(const json& j, subsonic_error& err)
+    void from_json(const json& obj, subsonic_error& err)
     {
-        j.at("code").get_to(err.code);
-        if (j.contains("message"))
-            j.at("message").get_to(err.message);
+        obj.at("code").get_to(err.code);
+        if (obj.contains("message"))
+        {
+            obj.at("message").get_to(err.message);
+        }
     }
 
     //
     // subsonic_response
     //
 
-    void to_json(json& j, const subsonic_response& p)
+    void to_json(json& obj, const subsonic_response& res)
     {
-        j = json {
-            { "status", p.status },
-            { "version", p.version },
-            { "type", p.type },
-            { "serverVersion", p.serverVersion },
-            { "openSubsonic", p.openSubsonic },
-            { "error", p.error },
+        obj = json {
+            { "status", res.status },
+            { "version", res.version },
+            { "type", res.type },
+            { "serverVersion", res.serverVersion },
+            { "openSubsonic", res.openSubsonic },
+            { "error", res.error },
         };
     }
-    void from_json(const json& j, subsonic_response& p)
+    void from_json(const json& obj, subsonic_response& res)
     {
-        j.at("status").get_to(p.status);
-        j.at("version").get_to(p.version);
-        j.at("type").get_to(p.type);
-        j.at("serverVersion").get_to(p.serverVersion);
-        j.at("openSubsonic").get_to(p.openSubsonic);
-        if (j.contains("error"))
-            j.at("error").get_to(p.error);
+        obj.at("status").get_to(res.status);
+        obj.at("version").get_to(res.version);
+        obj.at("type").get_to(res.type);
+        obj.at("serverVersion").get_to(res.serverVersion);
+        obj.at("openSubsonic").get_to(res.openSubsonic);
+        if (obj.contains("error"))
+        {
+            obj.at("error").get_to(res.error);
+        }
     }
 
     //
     // music_folder
     //
 
-    void to_json(json& j, const music_folder& m)
+    void to_json(json& obj, const music_folder& mfolder)
     {
-        j = json {
-            { "id", m.id },
-            { "name", m.name },
+        obj = json {
+            { "id", mfolder.id },
+            { "name", mfolder.name },
         };
     }
-    void from_json(const json& j, music_folder& m)
+    void from_json(const json& obj, music_folder& mfolder)
     {
-        j.at("id").get_to(m.id);
-        j.at("name").get_to(m.name);
+        obj.at("id").get_to(mfolder.id);
+        obj.at("name").get_to(mfolder.name);
     }
 
     //
     // music_folder_response
     //
 
-    void from_json(const json& j, music_folder_response& m)
+    void from_json(const json& obj, music_folder_response& res)
     {
-        nlohmann::from_json(j, static_cast<subsonic_response&>(m));
-        if (j.contains("musicFolders"))
-            j.at("musicFolders").at("musicFolder").get_to(m.music_folders);
+        nlohmann::from_json(obj, static_cast<subsonic_response&>(res));
+        if (obj.contains("musicFolders"))
+        {
+            obj.at("musicFolders").at("musicFolder").get_to(res.music_folders);
+        }
     }
 
-    void from_json(const json& j, music_track& m)
+    void from_json(const json& obj, music_track& track)
     {
-        j.at("id").get_to(m.id);
-        j.at("title").get_to(m.title);
+        obj.at("id").get_to(track.id);
+        obj.at("title").get_to(track.title);
     }
 
-    void from_json(const json& j, album_list& a)
+    void from_json(const json& obj, album_list& album)
     {
-        j.at("album").get_to(a.album);
+        obj.at("album").get_to(album.album);
     }
 
-    void from_json(const json& j, album_list_response& a)
+    void from_json(const json& obj, album_list_response& res)
     {
-        nlohmann::from_json(j, static_cast<subsonic_response&>(a));
-        if (j.contains("albumList"))
-            j.at("albumList").get_to(a.album_list);
+        nlohmann::from_json(obj, static_cast<subsonic_response&>(res));
+        if (obj.contains("albumList"))
+        {
+            obj.at("albumList").get_to(res.album_list);
+        }
     }
 
-    void from_json(const json& j, album_id3& a)
+    void from_json(const json& obj, album_id3& aid)
     {
-        if (j.contains("song"))
-            j.at("song").get_to(a.children);
+        if (obj.contains("song"))
+        {
+            obj.at("song").get_to(aid.children);
+        }
     }
 
-    void from_json(const json& j, album_response& a)
+    void from_json(const json& obj, album_response& res)
     {
-        nlohmann::from_json(j, static_cast<subsonic_response&>(a));
-        if (j.contains("album"))
-            j.at("album").get_to(a.album);
+        nlohmann::from_json(obj, static_cast<subsonic_response&>(res));
+        if (obj.contains("album"))
+        {
+            obj.at("album").get_to(res.album);
+        }
     }
 } // namespace oss::data

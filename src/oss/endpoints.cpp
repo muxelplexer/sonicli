@@ -66,15 +66,16 @@ namespace oss
         return body.at("subsonic-response").template get<oss::data::album_response>();
     }
 
-    std::optional<std::vector<data::album_response>> getAlbum(const server_config& config, const std::vector<data::music_track>& albums_list)
+    std::optional<std::vector<data::album_response>> getAlbum(const server_config& config,
+                                                              const std::vector<data::music_track>& albums_list)
     {
         cpr::Url uri(config.url_string + "/rest/getAlbum.view");
-        std::vector<std::shared_ptr<cpr::Session>> sessions{};
-        cpr::MultiPerform mp{};
+        std::vector<std::shared_ptr<cpr::Session>> sessions {};
+        cpr::MultiPerform multi {};
 
         for (const auto& album : albums_list)
         {
-            auto session{std::make_shared<cpr::Session>()};
+            auto session { std::make_shared<cpr::Session>() };
             auto params { *config.parameters };
             params.Add({
                 { "id", album.id },
@@ -86,12 +87,11 @@ namespace oss
 
         for (auto& session : sessions)
         {
-            mp.AddSession(session);
+            multi.AddSession(session);
         }
 
-
-        const auto responses{mp.Get()};
-        std::vector<data::album_response> song_responses{};
+        const auto responses { multi.Get() };
+        std::vector<data::album_response> song_responses {};
         for (const auto& res : responses)
         {
             if (res.error)

@@ -19,7 +19,9 @@ int main()
     screen.Loop(login_renderer);
 
     if (!config.password)
+    {
         return 1;
+    }
 
     ui::album_view album{screen, config};
     screen.Loop(album.render());
