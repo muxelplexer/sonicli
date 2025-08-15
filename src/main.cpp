@@ -7,17 +7,15 @@ import ftxui;
 
 int main()
 {
-    oss::server_config config { "", "" };
+    auto config { oss::server_config::from_file().value_or({"", ""}) };
     auto screen { ftxui::ScreenInteractive::Fullscreen() };
-
-    ui::login_component login { screen, config };
-    auto login_renderer = ftxui::Renderer(login.component(), [&] { return login.render(); });
-
-    screen.Loop(login_renderer);
 
     if (!config.password)
     {
-        return 1;
+        ui::login_component login { screen, config };
+        auto login_renderer = ftxui::Renderer(login.component(), [&] { return login.render(); });
+
+        screen.Loop(login_renderer);
     }
 
     ui::album_view album { screen, config };
