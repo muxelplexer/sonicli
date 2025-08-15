@@ -42,7 +42,6 @@ namespace ui
 
     std::vector<std::vector<std::string>> album_view::get_albums_tracks()
     {
-        const auto time1 { std::chrono::high_resolution_clock::now() };
         const auto res { oss::getAlbumList(*mConfig) };
         std::vector<std::vector<std::string>> album_tracks {};
         if (!res.has_value())
@@ -101,10 +100,6 @@ namespace ui
             );
         }
 
-        const auto time2 { std::chrono::high_resolution_clock::now() };
-        const std::chrono::duration<double, std::milli> ms_double { time2 - time1 };
-        const std::chrono::duration<double> s_double { time2 - time1 };
-        std::cout << std::format("Album Fetch took: {}s/{}ms\n", s_double.count(), ms_double.count());
         return album_tracks;
     }
 
