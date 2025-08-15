@@ -21,7 +21,7 @@ namespace ui
         int mTrackSelected { 0 };
         std::vector<std::string> mAlbumTitles { get_albums() };
         std::vector<std::vector<std::string>> mAlbumTracks { get_albums_tracks() };
-        std::vector<std::string> mCurrentAlbumTracks{mAlbumTracks[0]};
+        std::vector<std::string> mCurrentAlbumTracks { mAlbumTracks[0] };
 
         ftxui::MenuOption albumOption { .entries   = &mAlbumTitles,
                                         .selected  = &mAlbumSelected,

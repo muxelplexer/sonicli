@@ -63,41 +63,42 @@ namespace ui
             {
                 return {};
             }
-            std::ranges::transform(
-                std::views::filter(*track_responses, [](const auto& album){
-                    if (album.error.has_value())
-                    {
-                        std::cerr << "ERROR: " << *album.error->message << "\n";
-                        return false;
-                    }
-                    if (!album.album.has_value())
-                    {
-                        std::cerr << "ERROR: No album\n";
-                        return false;
-                    }
-                    if (!album.album.has_value())
-                    {
-                        std::cerr << "ERROR: No album\n";
-                        return false;
-                    }
-                    if (!album.album->children.has_value())
-                    {
-                        std::cerr << "ERROR: No album children\n";
-                        return false;
-                    }
-                    return true;
-                }),
-                std::back_inserter(album_tracks),
-                [](const auto& album) {
-                    std::vector<std::string> tracks {};
-                    tracks.reserve(album.album->children->size());
-                    for (const auto& track : *album.album->children)
-                    {
-                        tracks.emplace_back(track.title);
-                    }
-                    return tracks;
-                }
-            );
+            std::ranges::transform(std::views::filter(*track_responses,
+                                                      [](const auto& album)
+                                                      {
+                                                          if (album.error.has_value())
+                                                          {
+                                                              std::cerr << "ERROR: " << *album.error->message << "\n";
+                                                              return false;
+                                                          }
+                                                          if (!album.album.has_value())
+                                                          {
+                                                              std::cerr << "ERROR: No album\n";
+                                                              return false;
+                                                          }
+                                                          if (!album.album.has_value())
+                                                          {
+                                                              std::cerr << "ERROR: No album\n";
+                                                              return false;
+                                                          }
+                                                          if (!album.album->children.has_value())
+                                                          {
+                                                              std::cerr << "ERROR: No album children\n";
+                                                              return false;
+                                                          }
+                                                          return true;
+                                                      }),
+                                   std::back_inserter(album_tracks),
+                                   [](const auto& album)
+                                   {
+                                       std::vector<std::string> tracks {};
+                                       tracks.reserve(album.album->children->size());
+                                       for (const auto& track : *album.album->children)
+                                       {
+                                           tracks.emplace_back(track.title);
+                                       }
+                                       return tracks;
+                                   });
         }
 
         return album_tracks;

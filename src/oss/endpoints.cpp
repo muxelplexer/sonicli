@@ -75,17 +75,18 @@ namespace oss
         sessions.reserve(albums_list.size());
         cpr::MultiPerform multi {};
 
-        std::ranges::for_each(albums_list, [&config, &uri, &sessions](const auto& album)
-        {
-            auto session { std::make_shared<cpr::Session>() };
-            auto params { *config.parameters };
-            params.Add({
-                { "id", album.id },
-            });
-            session->SetUrl(uri);
-            session->SetParameters(params);
-            sessions.emplace_back(std::move(session));
-        });
+        std::ranges::for_each(albums_list,
+                              [&config, &uri, &sessions](const auto& album)
+                              {
+                                  auto session { std::make_shared<cpr::Session>() };
+                                  auto params { *config.parameters };
+                                  params.Add({
+                                      { "id", album.id },
+                                  });
+                                  session->SetUrl(uri);
+                                  session->SetParameters(params);
+                                  sessions.emplace_back(std::move(session));
+                              });
 
         for (auto& session : sessions)
         {
@@ -94,20 +95,21 @@ namespace oss
 
         const auto responses { multi.Get() };
         std::vector<data::album_response> song_responses {};
-        std::ranges::transform(
-            std::views::filter(responses, [](const auto& res){
-                if (res.error)
-                {
-                    std::cerr << "ERROR: " << res.error.message << "\n";
-                }
-                return !res.error;
-            }),
-            std::back_inserter(song_responses),
-            [](const auto& res){
-                const auto body(json::parse(res.text));
-                return body.at("subsonic-response").template get<oss::data::album_response>();
-            }
-        );
+        std::ranges::transform(std::views::filter(responses,
+                                                  [](const auto& res)
+                                                  {
+                                                      if (res.error)
+                                                      {
+                                                          std::cerr << "ERROR: " << res.error.message << "\n";
+                                                      }
+                                                      return !res.error;
+                                                  }),
+                               std::back_inserter(song_responses),
+                               [](const auto& res)
+                               {
+                                   const auto body(json::parse(res.text));
+                                   return body.at("subsonic-response").template get<oss::data::album_response>();
+                               });
         return song_responses;
     }
 } // namespace oss
