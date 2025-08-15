@@ -10,3 +10,6 @@
 [submodule "ext/cryptopp-cmake"]
 	path = ext/cryptopp-cmake
 	url = https://github.com/abdes/cryptopp-cmake.git
+[submodule "ext/cryptopp"]
+	path = ext/cryptopp
+	url = https://github.com/weidai11/cryptopp.git
