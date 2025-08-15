@@ -8,38 +8,31 @@ import ftxui;
 namespace ui
 {
     debug_view::debug_view(ftxui::ScreenInteractive& screen, oss::server_config& config)
-        : mConfig{&config}
-        , mScreen{&screen}
-        , mContainer(ftxui::Container::Vertical(
-            {
-                mPing,
-                mMusicFolders,
-                mQuit
-            } , &mIndex
-        ))
+        : mConfig { &config }
+        , mScreen { &screen }
+        , mContainer(ftxui::Container::Vertical({ mPing, mMusicFolders, mAlbumList, mQuit }, &mIndex))
     {
-
     }
 
     ftxui::Element debug_view::render()
     {
-        return ftxui::vbox({
-            ftxui::text("Debugging Page"),
-            ftxui::separator(),
-            ftxui::text(std::format("Connected to server: {}", mConfig->url_string)),
-            ftxui::text(std::format("User: {}", mConfig->user)),
-            ftxui::separator(),
-            ftxui::paragraph(mDebugText),
-            ftxui::separator(),
-            mPing->Render(),
-            mMusicFolders->Render(),
-            mQuit->Render()
-        }) | ftxui::border;
+        return ftxui::vbox({ ftxui::text("Debugging Page"),
+                             ftxui::separator(),
+                             ftxui::text(std::format("Connected to server: {}", mConfig->url_string)),
+                             ftxui::text(std::format("User: {}", mConfig->user)),
+                             ftxui::separator(),
+                             ftxui::paragraph(mDebugText),
+                             ftxui::separator(),
+                             mPing->Render(),
+                             mMusicFolders->Render(),
+                             mAlbumList->Render(),
+                             mQuit->Render() })
+               | ftxui::border;
     }
 
     void debug_view::ping()
     {
-        const auto response{oss::ping(*mConfig)};
+        const auto response { oss::ping(*mConfig) };
         if (!response.has_value())
         {
             mDebugText = "Could not reach server";
@@ -56,7 +49,7 @@ namespace ui
     }
     void debug_view::musicFolders()
     {
-        const auto response{oss::getMusicFolders(*mConfig)};
+        const auto response { oss::getMusicFolders(*mConfig) };
         if (!response.has_value())
         {
             mDebugText = "Could not reach server";
@@ -77,4 +70,33 @@ namespace ui
             }
         }
     }
-}
+
+    void debug_view::albumList()
+    {
+        const auto response { oss::getAlbumList(*mConfig) };
+        if (!response.has_value())
+        {
+            mDebugText = "Could not reach server";
+            return;
+        }
+
+        if (response->error.has_value())
+        {
+            mDebugText = *response->error->message;
+            return;
+        }
+
+        if (response->album_list.has_value())
+        {
+            mDebugText = "";
+            for (const auto& album : response->album_list->album)
+            {
+                mDebugText += std::format("{}\n", album.title);
+            }
+        }
+        else
+        {
+            mDebugText = "Wo album?";
+        }
+    }
+} // namespace ui

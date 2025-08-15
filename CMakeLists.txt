@@ -2,20 +2,46 @@ cmake_minimum_required(VERSION 4.0)
 project(sonicli
         VERSION 0.0.1)
 
-set(CXX_STANDARD 23)
+include(FetchContent)
 
 set(NLOHMANN_JSON_BUILD_MODULES ON)
-add_subdirectory(ext/json)
-
-add_subdirectory(ext/cpr)
-
+FetchContent_Declare(nlohmann_json
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/json
+    BINARY_DIR ${CMAKE_BINARY_DIR}/ext/json
+    OVERRIDE_FIND_PACKAGE
+    SYSTEM
+    CMAKE_ARGS
+        NLOHMANN_JSON_BUILD_MODULES ON
+)
+FetchContent_MakeAvailable(nlohmann_json)
+FetchContent_Declare(cpr
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/cpr
+    BINARY_DIR ${CMAKE_BINARY_DIR}/ext/cpr
+    OVERRIDE_FIND_PACKAGE
+    SYSTEM
+)
+FetchContent_MakeAvailable(cpr)
 set(FTXUI_BUILD_MODULES ON)
-add_subdirectory(ext/FTXUI)
+FetchContent_Declare(ftxui
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/FTXUI
+    BINARY_DIR ${CMAKE_BINARY_DIR}/ext/FTXUI
+    OVERRIDE_FIND_PACKAGE
+    SYSTEM
+    CMAKE_ARGS
+        NLOHMANN_JSON_BUILD_MODULES ON
+)
+FetchContent_MakeAvailable(ftxui)
 
+set(CRYPTOPP_BUILD_TESTING OFF CACHE BOOL INTERNAL)
+FetchContent_Declare(cryptopp
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/cryptopp-cmake
+    BINARY_DIR ${CMAKE_BINARY_DIR}/ext/cryptopp-cmake
+    OVERRIDE_FIND_PACKAGE
+    SYSTEM
+)
+FetchContent_MakeAvailable(cryptopp)
 
-set(CRYPTOPP_ENABLE_NAMESPACE_WEAK 1)
-set(CRYPTOPP_BUILD_TESTING OFF)
-add_subdirectory(ext/cryptopp-cmake)
+find_package(ftxui REQUIRED)
 
 add_executable(sonicli
     src/main.cpp
@@ -24,9 +50,10 @@ add_executable(sonicli
     src/oss/data/subsonic_response.cpp
     src/oss/endpoints.cpp
     src/oss/server_config.cpp
-    src/ui/debug_view.cpp
+    src/ui/album_view.cpp
     src/ui/login_component.cpp
 )
+
 target_include_directories(sonicli PRIVATE
     inc/
 )
