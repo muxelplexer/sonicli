@@ -2,6 +2,7 @@
 #include "oss/data/subsonic_response.hpp"
 #include "oss/server_config.hpp"
 #include <ftxui/component/component_options.hpp>
+#include <unordered_map>
 import ftxui;
 
 namespace ui
@@ -21,10 +22,10 @@ namespace ui
 
         int mAlbumSelected { 0 };
         int mTrackSelected { 0 };
-        std::vector<oss::data::music_track> mAlbums{};
+        std::vector<oss::data::music_track> mAlbums;
         std::vector<std::string> mAlbumTitles { get_albums() };
-        std::vector<std::vector<std::string>> mAlbumTracks { get_current_albums_tracks() };
-        std::vector<std::string> mCurrentAlbumTracks { mAlbumTracks[0] };
+        std::unordered_map<std::string, std::vector<oss::data::music_track>> mAlbumTracks;
+        std::vector<std::string> mCurrentAlbumTracks { get_current_albums_tracks() };
 
         ftxui::MenuOption albumOption { .entries   = &mAlbumTitles,
                                         .selected  = &mAlbumSelected,
