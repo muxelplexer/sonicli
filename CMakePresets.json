@@ -15,6 +15,8 @@
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CPR_USE_SYSTEM_CURL": "ON",
+        "TOMLPLUSPLUS_BUILD_MODULES": "ON",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "TRUE",
         "CRYPTOPP_SOURCES": "ext/cryptopp"
       }
