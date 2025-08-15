@@ -1,7 +1,9 @@
 #include "ui/album_view.hpp"
 #include "oss/endpoints.hpp"
+#include <algorithm>
 #include <chrono>
 #include <iostream>
+#include <ranges>
 #include <ratio>
 import ftxui;
 
@@ -50,36 +52,53 @@ namespace ui
 
         if (res->error.has_value())
         {
+            std::cerr << "ERROR: " << *res->error->message << "\n";
             return {};
         }
 
         if (res->album_list.has_value())
         {
+            album_tracks.reserve(res->album_list->album.size());
             const auto track_responses { oss::getAlbum(*mConfig, res->album_list->album) };
             if (!track_responses.has_value())
             {
                 return {};
             }
-            for ([[maybe_unused]] const auto& album : *track_responses)
-            {
-                std::vector<std::string> tracks {};
-                if (album.error.has_value())
-                {
-                    return {};
-                }
-                if (album.album.has_value())
-                {
-                    if (album.album->children.has_value())
+            std::ranges::transform(
+                std::views::filter(*track_responses, [](const auto& album){
+                    if (album.error.has_value())
                     {
-                        for (const auto& track : *album.album->children)
-                        {
-                            tracks.emplace_back(track.title);
-                        }
+                        std::cerr << "ERROR: " << *album.error->message << "\n";
+                        return false;
                     }
-                    else { }
+                    if (!album.album.has_value())
+                    {
+                        std::cerr << "ERROR: No album\n";
+                        return false;
+                    }
+                    if (!album.album.has_value())
+                    {
+                        std::cerr << "ERROR: No album\n";
+                        return false;
+                    }
+                    if (!album.album->children.has_value())
+                    {
+                        std::cerr << "ERROR: No album children\n";
+                        return false;
+                    }
+                    return true;
+                }),
+                std::back_inserter(album_tracks),
+                [](const auto& album) {
+                    std::vector<std::string> tracks {};
+                    tracks.reserve(album.album->children->size());
+                    for (const auto& track : *album.album->children)
+                    {
+                        tracks.emplace_back(track.title);
+                    }
+                    return tracks;
                 }
-                album_tracks.emplace_back(std::move(tracks));
-            }
+            );
         }
 
         const auto time2 { std::chrono::high_resolution_clock::now() };
