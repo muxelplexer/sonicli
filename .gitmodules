@@ -13,3 +13,6 @@
 [submodule "ext/cryptopp"]
 	path = ext/cryptopp
 	url = https://github.com/weidai11/cryptopp.git
+[submodule "ext/tomlplusplus"]
+	path = ext/tomlplusplus
+	url = git@github.com:marzer/tomlplusplus.git
