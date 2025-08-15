@@ -23,7 +23,6 @@ add_executable(sonicli
     src/oss/endpoints.cpp
     src/oss/server_config.cpp
     src/ui/album_view.cpp
-    src/ui/debug_view.cpp
     src/ui/login_component.cpp
 )
 
