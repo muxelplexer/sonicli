@@ -2,6 +2,7 @@
 #include "oss/endpoints.hpp"
 #include <algorithm>
 #include <iostream>
+#include <iterator>
 #include <ranges>
 import ftxui;
 
@@ -34,11 +35,10 @@ namespace ui
                 mAlbums.emplace_back(album);
             }
         }
-        std::vector<std::string> album_titles{};
+        std::vector<std::string> album_titles {};
         album_titles.reserve(mAlbums.size());
-        std::ranges::transform(mAlbums, std::back_inserter(album_titles), [](const auto& album){
-            return album.title;
-        });
+        std::ranges::transform(
+            mAlbums, std::back_inserter(album_titles), [](const auto& album) { return album.title; });
         return album_titles;
     }
 
@@ -108,7 +108,15 @@ namespace ui
 
     std::vector<std::string> album_view::get_current_albums_tracks()
     {
-        const auto res { oss::getAlbum(*mConfig, mAlbums[mAlbumSelected].id) };
+        const auto album_id { mAlbums[mAlbumSelected].id };
+        if (mAlbumTracks.contains(album_id))
+        {
+            std::vector<std::string> track_list {};
+            std::ranges::transform(
+                mAlbumTracks[album_id], std::back_inserter(track_list), [](const auto& track) { return track.title; });
+            return track_list;
+        }
+        const auto res { oss::getAlbum(*mConfig, album_id) };
         if (!res.has_value())
         {
             return {};
@@ -119,13 +127,14 @@ namespace ui
             std::cerr << "ERROR: " << *res->error->message << "\n";
             return {};
         }
-        std::vector<std::string> tracks {};
-        tracks.reserve(res->album->children->size());
+        std::vector<std::string> tracks_strings {};
+        tracks_strings.reserve(res->album->children->size());
         for (const auto& track : *res->album->children)
         {
-            tracks.emplace_back(track.title);
+            tracks_strings.emplace_back(track.title);
         }
-        return tracks;
+        mAlbumTracks.emplace(album_id, *res->album->children);
+        return tracks_strings;
     }
 
     ftxui::Component album_view::render()
@@ -137,7 +146,7 @@ namespace ui
                                                         ftxui::separator(),
                                                         ftxui::hbox({
                                                             mAlbumMenu->Render() | ftxui::yframe | ftxui::yflex,
-                                                            mTrackMenu->Render() | ftxui::xflex,
+                                                            mTrackMenu->Render() | ftxui::yframe | ftxui::xflex,
                                                         }) })
                                           | ftxui::border;
                                });
