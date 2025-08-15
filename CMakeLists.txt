@@ -40,11 +40,14 @@ FetchContent_Declare(cryptopp
     SYSTEM
 )
 FetchContent_MakeAvailable(cryptopp)
+set(TOMLPLUSPLUS_BUILD_MODULES ON CACHE BOOL INTERNAL)
 FetchContent_Declare(tomlplusplus
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/tomlplusplus
     BINARY_DIR ${CMAKE_BINARY_DIR}/ext/tomlplusplus
     OVERRIDE_FIND_PACKAGE
     SYSTEM
+    CMAKE_ARGS
+        TOMLPLUSPLUS_BUILD_MODULES ON
 )
 FetchContent_MakeAvailable(tomlplusplus)
 
@@ -70,7 +73,7 @@ target_link_libraries(sonicli PRIVATE
     cpr::cpr
     ftxui::modules
     nlohmann_json_modules
-    tomlplusplus::tomlplusplus
+    tomlplusplus_modules
 )
 set_target_properties(sonicli
     PROPERTIES
