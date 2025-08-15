@@ -62,6 +62,7 @@ add_executable(sonicli
     src/oss/server_config.cpp
     src/ui/album_view.cpp
     src/ui/login_component.cpp
+    src/util/xdg.cpp
 )
 
 target_include_directories(sonicli PRIVATE
