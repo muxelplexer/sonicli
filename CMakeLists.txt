@@ -53,6 +53,9 @@ FetchContent_Declare(tomlplusplus
 FetchContent_MakeAvailable(tomlplusplus)
 
 find_package(ftxui REQUIRED)
+find_package(PkgConfig REQUIRED) 
+
+pkg_check_modules(MPV REQUIRED IMPORTED_TARGET GLOBAL mpv)
 
 add_executable(sonicli
     src/main.cpp
@@ -71,6 +74,7 @@ target_include_directories(sonicli PRIVATE
 )
 
 target_link_libraries(sonicli PRIVATE
+    PkgConfig::MPV
     cryptopp::cryptopp
     cpr::cpr
     ftxui::modules

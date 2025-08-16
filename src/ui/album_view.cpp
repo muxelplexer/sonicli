@@ -5,7 +5,10 @@
 #include <ftxui/dom/elements.hpp>
 #include <iostream>
 #include <iterator>
+#include <memory>
 #include <ranges>
+#include <mpv/client.h>
+
 import ftxui;
 
 namespace ui
@@ -146,6 +149,58 @@ namespace ui
         return tracks_strings;
     }
 
+    static std::atomic<bool> stop_thread{false};
+    static mpv_handle *mpv = nullptr;
+    void album_view::stream_start()
+    {
+        this->stream_stop();
+        std::string url{mConfig->url_string};
+        const auto album_id { mAlbumTracks[mAlbums[mAlbumSelected].id][mTrackSelected].id };
+        auto params{*mConfig->parameters};
+        url += "/rest/stream?";
+        params.Add({
+                "id", album_id
+        });
+        url += params.GetContent();
+
+        mStreamThread = std::make_unique<std::thread>([url](){
+            mpv = mpv_create();
+            mpv_initialize(mpv);
+
+
+            const char *command[] = {"loadfile", url.c_str(), nullptr};
+            mpv_set_property_string(mpv, "vid", "no");
+            mpv_command(mpv, command);
+            while (!stop_thread) {
+                std::cerr << url << std::endl;
+                mpv_event *event = mpv_wait_event(mpv, 10000);
+                // std::cerr << std::format("event: {}\n", static_cast<int>(event->event_id));
+                if (event->event_id == MPV_EVENT_SHUTDOWN)
+                {
+                    break;
+                }
+            }
+
+            mpv_terminate_destroy(mpv);
+            mpv = nullptr;
+        });
+
+
+
+    }
+
+    void album_view::stream_stop()
+    {
+        if (mStreamThread)
+        {
+            stop_thread.store(true);
+            mpv_wakeup(mpv);
+            mStreamThread->join();
+            mStreamThread.reset();
+            stop_thread.store(false);
+        }
+    }
+
     ftxui::Component album_view::render()
     {
         return ftxui::Renderer(mContainer,
@@ -159,10 +214,17 @@ namespace ui
                                                             mTrackMenu->Render() | ftxui::yframe | ftxui::xflex,
                                                         }) })
                                           | ftxui::border;
-                               }) | ftxui::CatchEvent([](const ftxui::Event& event)
+                               }) | ftxui::CatchEvent([this](const ftxui::Event& event)
                                 {
                                     if (event == ftxui::Event::Return)
                                     {
+                                        if (!mStreamThread)
+                                        {
+                                            stream_start();
+                                        } else
+                                        {
+                                            stream_stop();
+                                        }
                                         return true;
                                     }
                                     return false;
