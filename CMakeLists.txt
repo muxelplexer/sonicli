@@ -4,15 +4,12 @@ project(sonicli
 
 include(FetchContent)
 
-set(NLOHMANN_JSON_BUILD_MODULES ON)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 FetchContent_Declare(nlohmann_json
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/json
     BINARY_DIR ${CMAKE_BINARY_DIR}/ext/json
     OVERRIDE_FIND_PACKAGE
     SYSTEM
-    CMAKE_ARGS
-        NLOHMANN_JSON_BUILD_MODULES ON
 )
 FetchContent_MakeAvailable(nlohmann_json)
 FetchContent_Declare(cpr
@@ -22,14 +19,11 @@ FetchContent_Declare(cpr
     SYSTEM
 )
 FetchContent_MakeAvailable(cpr)
-set(FTXUI_BUILD_MODULES ON)
 FetchContent_Declare(ftxui
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/FTXUI
     BINARY_DIR ${CMAKE_BINARY_DIR}/ext/FTXUI
     OVERRIDE_FIND_PACKAGE
     SYSTEM
-    CMAKE_ARGS
-        NLOHMANN_JSON_BUILD_MODULES ON
 )
 FetchContent_MakeAvailable(ftxui)
 
@@ -41,14 +35,11 @@ FetchContent_Declare(cryptopp
     SYSTEM
 )
 FetchContent_MakeAvailable(cryptopp)
-set(TOMLPLUSPLUS_BUILD_MODULES ON CACHE BOOL INTERNAL)
 FetchContent_Declare(tomlplusplus
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/tomlplusplus
     BINARY_DIR ${CMAKE_BINARY_DIR}/ext/tomlplusplus
     OVERRIDE_FIND_PACKAGE
     SYSTEM
-    CMAKE_ARGS
-        TOMLPLUSPLUS_BUILD_MODULES ON
 )
 FetchContent_MakeAvailable(tomlplusplus)
 
@@ -77,9 +68,11 @@ target_link_libraries(sonicli PRIVATE
     PkgConfig::MPV
     cryptopp::cryptopp
     cpr::cpr
-    ftxui::modules
-    nlohmann_json_modules
-    tomlplusplus_modules
+    ftxui::dom
+    ftxui::screen
+    ftxui::component
+    nlohmann_json::nlohmann_json
+    tomlplusplus::tomlplusplus
 )
 set_target_properties(sonicli
     PROPERTIES
@@ -89,7 +82,6 @@ target_compile_options(sonicli PRIVATE
     -Wall
     -Wextra
     -Wpedantic
-    -Werror
     -Weffc++
     -Wno-missing-designated-field-initializers
 )

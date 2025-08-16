@@ -1,13 +1,11 @@
 #include "oss/server_config.hpp"
 #include "ui/album_view.hpp"
 #include "ui/login_component.hpp"
-
-import nlohmann.json;
-import ftxui;
+#include <ftxui/component/component.hpp>
 
 int main()
 {
-    auto config { oss::server_config::from_file().value_or({"", ""}) };
+    auto config { oss::server_config::from_file().value_or({ "", "" }) };
     auto screen { ftxui::ScreenInteractive::Fullscreen() };
 
     if (!config.password)

@@ -10,7 +10,6 @@
 #include <cpr/timeout.h>
 #include <iostream>
 #include <iterator>
-import nlohmann.json;
 
 namespace oss
 {
@@ -97,29 +96,26 @@ namespace oss
             multi.AddSession(session);
         }
 
-        auto time2{std::chrono::steady_clock::now()};
+        auto time2 { std::chrono::steady_clock::now() };
 
         std::shared_ptr<cpr::Session> session = std::make_shared<cpr::Session>();
-        std::vector<cpr::AsyncResponse> async_responses{};
+        std::vector<cpr::AsyncResponse> async_responses {};
         std::ranges::for_each(albums_list,
-                [&async_responses, &uri, &config](const auto& album){
-                    auto params { *config.parameters };
-                    params.Add({
-                        { "id", album.id },
-                    });
-                    static constexpr int32_t timeout_ms{500};
-                    async_responses.emplace_back(cpr::GetAsync(uri, params, cpr::Timeout{timeout_ms}));
-                }
-        );
-        std::vector<cpr::Response> responses{};
-        std::ranges::transform(async_responses, std::back_inserter(responses), [](auto& album){
-            return album.get();
-        });
+                              [&async_responses, &uri, &config](const auto& album)
+                              {
+                                  auto params { *config.parameters };
+                                  params.Add({
+                                      { "id", album.id },
+                                  });
+                                  static constexpr int32_t timeout_ms { 500 };
+                                  async_responses.emplace_back(cpr::GetAsync(uri, params, cpr::Timeout { timeout_ms }));
+                              });
+        std::vector<cpr::Response> responses {};
+        std::ranges::transform(async_responses, std::back_inserter(responses), [](auto& album) { return album.get(); });
 
-        auto time2e{std::chrono::steady_clock::now()};
-        std::chrono::duration<double> diff2{time2e - time2};
+        auto time2e { std::chrono::steady_clock::now() };
+        std::chrono::duration<double> diff2 { time2e - time2 };
         std::cerr << std::format("Took2: {}s\n", diff2.count());
-
 
         std::vector<data::album_response> song_responses {};
         std::ranges::transform(std::views::filter(responses,

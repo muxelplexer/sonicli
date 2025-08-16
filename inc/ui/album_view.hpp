@@ -1,11 +1,12 @@
 #pragma once
 #include "oss/data/subsonic_response.hpp"
 #include "oss/server_config.hpp"
+#include <ftxui/component/component.hpp>
 #include <ftxui/component/component_options.hpp>
+#include <ftxui/component/screen_interactive.hpp>
 #include <memory>
 #include <thread>
 #include <unordered_map>
-import ftxui;
 
 namespace ui
 {

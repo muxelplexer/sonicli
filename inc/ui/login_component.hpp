@@ -1,10 +1,12 @@
 #pragma once
-#include <ftxui/component/component_base.hpp>
+#include <ftxui/component/component.hpp>
 #include <string>
 #include <vector>
 
+#include <ftxui/component/screen_interactive.hpp>
+#include <ftxui/dom/node.hpp>
+
 #include "oss/server_config.hpp"
-import ftxui;
 
 namespace ui
 {

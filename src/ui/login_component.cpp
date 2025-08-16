@@ -5,7 +5,6 @@
 #include <ftxui/dom/elements.hpp>
 #include <memory>
 
-import ftxui;
 namespace ui
 {
     login_component::login_component(ftxui::ScreenInteractive& screen, oss::server_config& config)
