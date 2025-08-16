@@ -2,6 +2,8 @@
 #include "oss/data/subsonic_response.hpp"
 #include "oss/server_config.hpp"
 #include <ftxui/component/component_options.hpp>
+#include <memory>
+#include <thread>
 #include <unordered_map>
 import ftxui;
 
@@ -17,6 +19,11 @@ namespace ui
         std::vector<std::string> get_albums();
         std::vector<std::vector<std::string>> get_albums_tracks();
         std::vector<std::string> get_current_albums_tracks();
+
+        void stream_start();
+        void stream_stop();
+        std::unique_ptr<std::thread> mStreamThread { nullptr };
+
         [[maybe_unused]] ftxui::ScreenInteractive* mScreen { nullptr };
         oss::server_config* mConfig { nullptr };
 
