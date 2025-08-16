@@ -1,6 +1,8 @@
 #include "ui/album_view.hpp"
 #include "oss/endpoints.hpp"
 #include <algorithm>
+#include <ftxui/component/component.hpp>
+#include <ftxui/dom/elements.hpp>
 #include <iostream>
 #include <iterator>
 #include <ranges>
@@ -149,13 +151,22 @@ namespace ui
         return ftxui::Renderer(mContainer,
                                [&]
                                {
-                                   return ftxui::vbox({ ftxui::text("Albums"),
+                                   return ftxui::vbox({ 
+                                                        ftxui::text("Albums"),
                                                         ftxui::separator(),
                                                         ftxui::hbox({
                                                             mAlbumMenu->Render() | ftxui::yframe | ftxui::yflex,
                                                             mTrackMenu->Render() | ftxui::yframe | ftxui::xflex,
                                                         }) })
                                           | ftxui::border;
-                               });
+                               }) | ftxui::CatchEvent([](const ftxui::Event& event)
+                                {
+                                    if (event == ftxui::Event::Return)
+                                    {
+                                        return true;
+                                    }
+                                    return false;
+
+                                });
     }
 } // namespace ui
