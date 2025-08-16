@@ -1,10 +1,9 @@
 #include "ui/album_view.hpp"
 #include "oss/endpoints.hpp"
 #include <algorithm>
-#include <chrono>
 #include <iostream>
+#include <iterator>
 #include <ranges>
-#include <ratio>
 import ftxui;
 
 namespace ui
@@ -18,7 +17,7 @@ namespace ui
     std::vector<std::string> album_view::get_albums()
     {
         const auto res { oss::getAlbumList(*mConfig) };
-        std::vector<std::string> albums {};
+        mAlbums.clear();
         if (!res.has_value())
         {
             return {};
@@ -31,13 +30,16 @@ namespace ui
 
         if (res->album_list.has_value())
         {
-            albums.reserve(res->album_list->album.size());
             for (const auto& album : res->album_list->album)
             {
-                albums.emplace_back(album.title);
+                mAlbums.emplace_back(album);
             }
         }
-        return albums;
+        std::vector<std::string> album_titles {};
+        album_titles.reserve(mAlbums.size());
+        std::ranges::transform(
+            mAlbums, std::back_inserter(album_titles), [](const auto& album) { return album.title; });
+        return album_titles;
     }
 
     std::vector<std::vector<std::string>> album_view::get_albums_tracks()
@@ -104,6 +106,44 @@ namespace ui
         return album_tracks;
     }
 
+    std::vector<std::string> album_view::get_current_albums_tracks()
+    {
+        const auto album_id { mAlbums[mAlbumSelected].id };
+        if (mAlbumTracks.contains(album_id))
+        {
+            std::vector<std::string> track_list {};
+            std::ranges::transform(
+                mAlbumTracks[album_id], std::back_inserter(track_list), [](const auto& track) { return track.title; });
+            return track_list;
+        }
+        const auto res { oss::getAlbum(*mConfig, album_id) };
+        if (!res.has_value())
+        {
+            return {};
+        }
+
+        if (res->error.has_value())
+        {
+            std::cerr << "ERROR: " << *res->error->message << "\n";
+            return {};
+        }
+
+        if (!res->album.has_value() || !res->album->children.has_value())
+        {
+            std::cerr << "ERROR: no album children found!\n";
+            return {};
+        }
+
+        std::vector<std::string> tracks_strings {};
+        tracks_strings.reserve(res->album->children->size());
+        for (const auto& track : *res->album->children)
+        {
+            tracks_strings.emplace_back(track.title);
+        }
+        mAlbumTracks.emplace(album_id, *res->album->children);
+        return tracks_strings;
+    }
+
     ftxui::Component album_view::render()
     {
         return ftxui::Renderer(mContainer,
@@ -113,7 +153,7 @@ namespace ui
                                                         ftxui::separator(),
                                                         ftxui::hbox({
                                                             mAlbumMenu->Render() | ftxui::yframe | ftxui::yflex,
-                                                            mTrackMenu->Render() | ftxui::xflex,
+                                                            mTrackMenu->Render() | ftxui::yframe | ftxui::xflex,
                                                         }) })
                                           | ftxui::border;
                                });
