@@ -12,12 +12,9 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "CPR_USE_SYSTEM_CURL": "ON",
         "CPR_USE_SYSTEM_LIB_PSL": "ON",
-        "TOMLPLUSPLUS_BUILD_MODULES": "ON",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "TRUE",
         "CRYPTOPP_SOURCES": "ext/cryptopp"
       }

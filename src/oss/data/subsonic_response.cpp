@@ -97,7 +97,7 @@ namespace oss::data
         nlohmann::from_json(obj, static_cast<subsonic_response&>(res));
         if (obj.contains("albumList"))
         {
-            obj.at("albumList").get_to(res.album_list);
+            obj.at("albumList").get_to(res.alist);
         }
     }
 

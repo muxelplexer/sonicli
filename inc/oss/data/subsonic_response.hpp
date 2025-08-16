@@ -1,10 +1,10 @@
 #pragma once
 
-#include <nlohmann/json.hpp>
 #include <optional>
 #include <string>
 
-import nlohmann.json;
+#include <nlohmann/json.hpp>
+
 namespace oss::data
 {
     using nlohmann::json;
@@ -60,7 +60,7 @@ namespace oss::data
 
     struct album_list_response : public subsonic_response
     {
-        std::optional<album_list> album_list;
+        std::optional<album_list> alist;
         friend void from_json(const json& obj, album_list_response& res);
     };
 
