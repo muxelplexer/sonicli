@@ -127,6 +127,13 @@ namespace ui
             std::cerr << "ERROR: " << *res->error->message << "\n";
             return {};
         }
+
+        if (!res->album.has_value() || !res->album->children.has_value())
+        {
+            std::cerr << "ERROR: no album children found!\n";
+            return {};
+        }
+
         std::vector<std::string> tracks_strings {};
         tracks_strings.reserve(res->album->children->size());
         for (const auto& track : *res->album->children)
