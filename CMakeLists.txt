@@ -5,6 +5,7 @@ project(sonicli
 include(FetchContent)
 
 set(NLOHMANN_JSON_BUILD_MODULES ON)
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 FetchContent_Declare(nlohmann_json
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/json
     BINARY_DIR ${CMAKE_BINARY_DIR}/ext/json
@@ -88,3 +89,5 @@ target_compile_options(sonicli PRIVATE
     -Weffc++
     -Wno-missing-designated-field-initializers
 )
+
+set_property(TARGET sonicli PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
