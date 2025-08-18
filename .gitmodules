@@ -13,3 +13,6 @@
 [submodule "ext/tomlplusplus"]
 	path = ext/tomlplusplus
 	url = git@github.com:marzer/tomlplusplus.git
+[submodule "ext/FTXUI"]
+	path = ext/FTXUI
+	url = https://github.com/ArthurSonzogni/FTXUI.git
